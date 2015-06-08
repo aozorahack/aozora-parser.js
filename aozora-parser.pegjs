@@ -1,12 +1,8 @@
 /*
  * 青空文庫注記の解析表現文法
  *
- * 青空文庫の注記記法の解析表現文法による表現（案）です。
- * 詳細は `aozora-proc.el' を参照してください。
- *
- * Original: https://github.com/kawabata/aozora-proc/blob/master/grammar.txt
- * Original Author: Taichi Kawabata <kawabata.taichi@gmail.com>
- * License: BSD
+ * https://github.com/kawabata/aozora-proc/blob/master/grammar.txt
+ * https://gist.github.com/takahashim/5b049a305128dcd12245
  */
 
 /*
