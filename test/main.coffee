@@ -6,9 +6,14 @@ path   = require 'path'
 
 describe 'aozora-parser.js', () ->
 
-  it 'parse basic', (done) ->
-    title = 'basic'
+  it 'can parse sorekara-yokoku-wo-meta', (done) ->
+    title = 'sorekara-yokoku-wo-meta'
     fixture = fs.readFileSync path.join(__dirname, 'fixtures', title + '.txt'), 'utf8'
-    actual = JSON.stringify parser.parse fixture
-    expected = fs.readFileSync path.join(__dirname, 'expect', title + '.json'), 'utf8'
-    actual.should.equal expected
+    parser.parse fixture
+    done()
+
+  it 'can parse sorekara-yokoku', (done) ->
+    title = 'sorekara-yokoku'
+    fixture = fs.readFileSync path.join(__dirname, 'fixtures', title + '.txt'), 'utf8'
+    parser.parse fixture
+    done()
