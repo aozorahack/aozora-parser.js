@@ -30,7 +30,7 @@ gulp.task 'watch', ->
 
 parse = ->
   through.obj (file, encoding, callback) ->
-    result = parser.parse file.contents.toString().trim("\n")
+    result = parser.parse file.contents.toString()
     file.contents = new Buffer JSON.stringify result
     @push file
     callback()
