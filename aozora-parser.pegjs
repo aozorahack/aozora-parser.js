@@ -16,7 +16,7 @@ String
   = Char+
 
 Char
-  = !"\n" !"［＃" !"※［＃" !( "〔" LatinChar ) !"《" !"》" !"｜" .
+  = $(!"\n" !"［＃" !"※［＃" !( "〔" LatinChar ) !"《" !"》" !"｜" .)
   / KanjiGaiji
   / NonKanjiGaiji
   / Kanbun
@@ -71,16 +71,16 @@ GeneralString "一般文字列"
     )+
 
 AnnString "注記文字列"
-  = (!"］" Char)+
+  = $(!"］" Char)+
 
 QuoteString "引用文字列"
-  = (
+  = $(
     (QuoteChar+ / LatinString) QuoteAnn* GeneralRuby? QuoteAnn*
     / DefRuby QuoteAnn*
   )+
 
 QuoteChar "引用文字"
-  = !"」は" !"」の" !"」に" !"」］" Char
+  = $(!"」は" !"」の" !"」に" !"」］" Char)
 
 QuoteAnn "引用注記"
   = ModifierAnn
@@ -178,7 +178,7 @@ DefRuby "指定ルビ"
   = DefRuby2 RubyAnn*
 
 GeneralRuby2 "一般ルビ２"
-  = "《" String "》"
+  = "《" $String "》"
 
 DefRuby2 "指定ルビ２"
   = "｜" (String / LatinString) QuoteAnn* "《" String "》"
