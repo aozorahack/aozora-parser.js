@@ -9,6 +9,9 @@
  * 青空文庫の「文字」の表記法
  */
 
+Start
+  = Block+
+
 String
   = Char+
 
@@ -62,9 +65,9 @@ LatinChar "欧文字"
 
 GeneralString "一般文字列"
   = (
-    (String / LatinString) QuoteAnn* GeneralRuby? QuoteAnn*
-    / DefRuby QuoteAnn*
-  )+
+      ((String / LatinString) QuoteAnn* GeneralRuby? QuoteAnn*)
+      / (DefRuby QuoteAnn*)
+    )+
 
 AnnString "注記文字列"
   = (!"］" Char)+
@@ -76,7 +79,7 @@ QuoteString "引用文字列"
   )+
 
 QuoteChar "引用文字"
-  = (!"」は" !"」の" !"」に" !"」］" String)+
+  = !"」は" !"」の" !"」に" !"」］" Char
 
 QuoteAnn "引用注記"
   = ModifierAnn
