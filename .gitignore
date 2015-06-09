@@ -1,2 +1,3 @@
 node_modules
-test/output
+test/sandbox/output.json
+test/sandbox/source.txt
