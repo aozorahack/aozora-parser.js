@@ -66,9 +66,17 @@ LatinChar "欧文字"
 
 GeneralString "一般文字列"
   = (
-      ((String / LatinString) QuoteAnn* GeneralRuby? QuoteAnn*)
-      / (DefRuby QuoteAnn*)
-    )+
+    s:$(String / LatinString) a1:QuoteAnn* r:GeneralRuby? a2:QuoteAnn* {
+      var ret = {
+        "type": "一般文字列",
+        "value": s
+      }
+      if (r) ret.ruby = r
+      if (a1.length || a2.length) ret.annotation = a1.concat(a2)
+      return ret
+    }
+    / DefRuby QuoteAnn*
+  )+
 
 AnnString "注記文字列"
   = $(!"］" Char)+
@@ -93,7 +101,12 @@ RubyAnn "ルビ注記"
   / RubyTypistAnn
 
 ModifierAnn "修飾注記"
-  = "［＃「" QuoteString "」" Modifier "］"
+  = "［＃「" q:QuoteString "」" m:Modifier "］" {
+    return {
+      "type": m[1],
+      "target": q
+    }
+  }
 
 RubyModifierAnn "ルビ修飾注記"
   = "［＃ルビの「" QuoteString "」" Modifier "］"
@@ -172,16 +185,24 @@ Number "数"
   / [一二三四五六七八九十]
 
 GeneralRuby "一般ルビ"
-  = GeneralRuby2 RubyAnn*
+  = r:GeneralRuby2 a:RubyAnn* {
+    return !a.length ? r : {
+      "type": "一般ルビ",
+      "value": r,
+      "annotation": a
+    }
+  }
 
 DefRuby "指定ルビ"
   = DefRuby2 RubyAnn*
 
 GeneralRuby2 "一般ルビ２"
-  = "《" $String "》"
+  = "《" s:$String "》" {
+    return s
+  }
 
 DefRuby2 "指定ルビ２"
-  = "｜" (String / LatinString) QuoteAnn* "《" String "》"
+  = "｜" (String / LatinString) QuoteAnn* "《" $String "》"
 
 LatinString "欧文"
   = "〔" LatinChar (LatinChar / [!-~] / QuoteAnn)+ "〕"
@@ -192,14 +213,19 @@ LatinString "欧文"
  */
 
 Line "行"
-  = (GeneralAnn / GeneralString)+
+  = l:(GeneralAnn / GeneralString)+ {
+    return {
+      "type": "行",
+      "value": l
+    }
+  }
 
 GeneralAnn "一般注記"
   = KakomiAnn
   / Warichu
   / ChiyoseAnn
   / Figure
-  / TeihonTypistAnn  // 地上げ→地寄せ
+  / TeihonTypistAnn
 
 KakomiAnn "囲み注記"
   = "［＃" ((Em / LeftEm / Jitai) / CharSize) "］"
@@ -252,12 +278,17 @@ TeihonTypistAnn "底本入力者注記"
  */
 
 Block "ブロック"
-  = (
+  = b:(
     PageDef
     / ParaIndent
     / ParaDef
     / Para
-  ) "［＃本文終わり］"?
+  ) "［＃本文終わり］"? {
+    return {
+      "type": "ブロック",
+      "value": b
+    }
+  }
 
 Block2 "ブロック２"
   = PageDef
@@ -270,10 +301,18 @@ Block3 "ブロック３"
   / Para
 
 Para "段落"
-  = Indent? Line? "\n"
+  = i:Indent? l:Line? "\n" {
+    return {
+      "type": "段落",
+      "indent": i || 0,
+      "value": l
+    }
+  }
 
 Indent "字下げ"
-  = "［＃" Number "字下げ］"
+  = "［＃" n:Number "字下げ］" {
+    return n
+  }
 
 PageDef "ページ指定"
   = Centering
