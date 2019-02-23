@@ -1,8 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 const gulp        = require('gulp');
 const peg         = require('gulp-peg');
 const gutil       = require('gulp-util');
@@ -13,8 +8,6 @@ const runSequence = require('run-sequence');
 const through     = require('through2');
 const parser      = require('./');
 
-gulp.task('default', cb => runSequence('build', '$sample', cb));
-
 // call task 'sample' via shell to avoid `require` cache
 gulp.task('$sample', shell.task('gulp sample'));
 
@@ -23,6 +16,8 @@ gulp.task('build', () =>
   .pipe(peg().on('error', gutil.log))
   .pipe(gulp.dest('dist'))
 );
+
+gulp.task('default', gulp.series(['build', '$sample']));
 
 gulp.task('sample', () =>
   gulp.src('test/sandbox/source.txt')
@@ -34,15 +29,15 @@ gulp.task('sample', () =>
 
 gulp.task('watch', function() {
   const o = {debounceDelay: 3000};
-  gulp.watch(['test/sandbox/source.txt'], o, ['$sample']);
-  return gulp.watch(['*.pegjs'], o, ['default']);
+  gulp.watch(['test/sandbox/source.txt'], o, gulp.task('$sample'));
+  gulp.watch(['*.pegjs'], o, gulp.task('default'));
 });
 
 var parse = () =>
   through.obj(function(file, encoding, callback) {
     const result = parser.parse(file.contents.toString());
-    file.contents = new Buffer(JSON.stringify(result));
+    file.contents = Buffer.from(JSON.stringify(result));
     this.push(file);
-    return callback();
+    callback();
   })
 ;
