@@ -14,7 +14,6 @@
     "parser"
   ],
   "devDependencies": {
-    "coffee-script": "^1.9.3",
     "gulp": "^3.9.0",
     "gulp-jsbeautifier": "0.0.8",
     "gulp-peg": "^0.1.2",
